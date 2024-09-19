@@ -1,0 +1,26 @@
+List p=18f4520
+    #include<pic18f4520.inc>
+        CONFIG OSC = INTIO67
+        CONFIG WDT = OFF
+        org 0x0
+
+MOVLW b'00111000' ;A
+MOVWF 0x000
+ANDLW b'11110000' ;7~4
+MOVWF 0x002
+MOVLW b'11000011' ;B
+MOVWF 0x001
+ANDLW b'00001111' ;3~0
+IORWF 0x002
+
+MOVLW 0x00
+MOVWF 0x003
+MOVLW 0x08
+Count:
+    BTFSS 0x002 , 0 ; if 1 skip next
+INCFSZ 0x003 ; if 0 add 1
+    RRNCF 0x02
+    DECFSZ WREG
+GOTO Count
+
+end
