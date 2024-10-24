@@ -1,0 +1,128 @@
+f#include "xc.inc"
+GLOBAL _multi_signed
+PSECT mytext,local,class=CODE,reloc=2
+   
+_multi_signed:
+    MOVWF 0x003
+    CLRF 0x000
+    
+    MOVFF 0x001,0x011
+    MOVLW 0x7F
+    CPFSGT 0x001
+	GOTO op1ok
+    MOVLW 0xFF
+    MOVWF 0x011
+    MOVF 0x001,w
+    SUBWF 0x011,w
+    MOVWF 0x011
+    INCF 0x011
+    INCF 0x000
+    
+    op1ok:
+	MOVFF 0x003,0x013
+	MOVLW 0x7F
+	CPFSGT 0x003
+	    GOTO op2ok
+	MOVLW 0xFF
+	MOVWF 0x013
+	MOVF 0x003,w
+	SUBWF 0x013,w
+	MOVWF 0x013
+	INCF 0x013
+	INCF 0x000
+   
+    op2ok:
+	CLRF 0x021
+	CLRF 0x022
+	BTFSS 0x011,0
+	    GOTO No0
+	MOVF 0x013,w
+	ADDWF 0x021,w
+	MOVWF 0x021
+    No0:
+	BTFSS 0x013,7
+	    GOTO Left1
+	RLCF 0x014
+	BSF 0x014,0
+	
+    Left1:
+	RLCF 0x013
+	BTFSS 0x011,1
+	    GOTO No1
+	MOVF 0x013,w
+	ADDWF 0x021,w
+	MOVWF 0x021
+	MOVF 0x014,w
+	ADDWFC 0x022,w
+	MOVWF 0x022
+    No1:
+	BTFSS 0x013,7
+	    GOTO Left2
+	RLCF 0x014
+	BSF 0x014,0
+	
+    Left2:
+	RLCF 0x013
+	BTFSS 0x011,2
+	    GOTO No2
+	MOVF 0x013,w
+	ADDWF 0x021,w
+	MOVWF 0x021
+	MOVF 0x014,w
+	ADDWFC 0x022,w
+	MOVWF 0x022
+    No2:
+	BTFSS 0x013,7
+	    GOTO Left3
+	RLCF 0x014
+	BSF 0x014,0
+	
+    Left3:
+	RLCF 0x013
+	BTFSS 0x011,3
+	    GOTO No3
+	MOVF 0x013,w
+	ADDWF 0x021,w
+	MOVWF 0x021
+	MOVF 0x014,w
+	ADDWFC 0x022,w
+	MOVWF 0x022
+    No3:
+	BTFSS 0x013,7
+	    GOTO Left4
+	RLCF 0x014
+	BSF 0x014,0
+	
+    Left4:
+	RLCF 0x013
+	BTFSS 0x011,4
+	    GOTO Move
+	MOVF 0x013,w
+	ADDWF 0x021,w
+	MOVWF 0x021
+	MOVF 0x014,w
+	ADDWFC 0x022,w
+	MOVWF 0x022
+    Move:
+	BTFSS 0x000,0
+	    GOTO Nomove
+	MOVLW 0xFF
+	MOVWF 0x031
+	MOVF 0x021,w
+	SUBWF 0x031,w
+	MOVWF 0x001
+	INCF 0x001
+	
+	MOVLW 0xFF
+	MOVWF 0x032
+	MOVF 0x022,w
+	SUBWFB 0x032,w
+	MOVWF 0x002
+	INCF 0x002
+	GOTO Finish
+	
+    Nomove:
+	MOVFF 0x021,0x001
+	MOVFF 0x022,0x002
+    Finish:
+    RETURN
